@@ -1,0 +1,14 @@
+.cards{
+  margin-top: 20px;
+}
+
+.detail-staff{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 50px;
+}
+
+.staff-info{
+  text-align: center;
+}
