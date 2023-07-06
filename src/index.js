@@ -4,18 +4,20 @@ import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import StaffProvider from "./staffs/StaffContext";
-import '@fontsource/roboto/300.css';
-import '@fontsource/roboto/400.css';
-import '@fontsource/roboto/500.css';
-import '@fontsource/roboto/700.css';
-
+import "@fontsource/roboto/300.css";
+import "@fontsource/roboto/400.css";
+import "@fontsource/roboto/500.css";
+import "@fontsource/roboto/700.css";
+import ToastProvider from "./components/ToastProvider";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <StaffProvider>
-    <React.StrictMode>
-      <App />
-    </React.StrictMode>
-  </StaffProvider>
+  <ToastProvider>
+    <StaffProvider>
+      <React.StrictMode>
+        <App />
+      </React.StrictMode>
+    </StaffProvider>
+  </ToastProvider>
 );
 
 // If you want to start measuring performance in your app, pass a function

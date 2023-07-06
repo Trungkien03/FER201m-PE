@@ -2,18 +2,15 @@ import React, { useContext } from "react";
 import { useParams } from "react-router-dom";
 import { StaffContext } from "../staffs/StaffContext";
 import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
-import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 
 export const Detail = () => {
 
   const { id } = useParams();
-  const { staffs } = useContext(StaffContext);
+  const { staffs, FormatDate } = useContext(StaffContext);
 
-  console.log(staffs);
   const staffDetail = staffs.find((obj) => {
     return obj.id === id;
   });
@@ -24,7 +21,7 @@ export const Detail = () => {
       </section>
     );
   }
-  console.log(staffDetail);
+
 
   return (
     <div className="detail-staff">
@@ -47,7 +44,7 @@ export const Detail = () => {
           <strong>Age:</strong> {staffDetail.age}
         </Typography>
         <Typography variant="body1" color="text.info">
-        <strong>Created At</strong>: {staffDetail.createdAt}
+        <strong>Created At</strong>: {FormatDate(staffDetail.createdAt)}
         </Typography>
         </div>
       </CardContent>

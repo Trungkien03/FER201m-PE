@@ -6,6 +6,7 @@ import {Contact} from "./pages/Contact";
 import {Dashboard} from "./pages/Dashboard";
 import {Detail} from "./pages/Detail";
 import { Footer } from './components/Footer';
+import { FormAdd } from './components/FormAdd';
 function App() {
   return (
     <div className="App">
@@ -17,6 +18,7 @@ function App() {
         <Route path='/contact' element={<Contact/>}/>
         <Route path='/dashboard' element={<Dashboard/>}/>
         <Route path='/detail/:id' element={<Detail/>}/>
+        <Route path='/add' element={<FormAdd/>}/>
         </Routes>
       </Router>
       <Footer/>

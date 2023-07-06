@@ -19,7 +19,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { StaffContext } from "../staffs/StaffContext";
 const defaultTheme = createTheme();
 export const Home = () => {
-  const { staffs } = React.useContext(StaffContext);
+  const { staffs} = React.useContext(StaffContext);
   console.log(staffs);
   return (
     <ThemeProvider theme={defaultTheme}>

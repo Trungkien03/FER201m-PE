@@ -9,6 +9,17 @@ import { StaffContext } from "../staffs/StaffContext";
 import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
 
+// for validate form
+import { useFormik } from "formik";
+import * as Yup from "yup";
+
+const initialState = {
+  name: "",
+  avatar: "",
+  age: "",
+  address: "",
+  createdAt: new Date().toISOString(),
+};
 
 const style = {
   position: "absolute",
@@ -29,7 +40,7 @@ const style = {
 export default function TransitionsModal({ staffId, handleClose }) {
   const [singleStaff, setSingleStaff] = useState({});
   const open = Boolean(staffId);
-  const { staffs, FormatDate } = useContext(StaffContext);
+  const { staffs, FormatDate, handleUpdate } = useContext(StaffContext);
   const [staffCreatedDate, setStaffCreatedDate] = useState("");
   useEffect(() => {
     const findStaffById = (id) => {
@@ -44,11 +55,32 @@ export default function TransitionsModal({ staffId, handleClose }) {
     }
   }, [staffId, staffs, FormatDate]);
 
-  const handleFieldChange = (field, value) => {
-    setSingleStaff((prevState) => ({
-      ...prevState,
-      [field]: value,
-    }));
+  const formik = useFormik({
+    initialValues: singleStaff,
+    enableReinitialize: true, // Thêm thuộc tính enableReinitialize để cập nhật lại giá trị khi initialValues thay đổi
+    onSubmit: async (values) => {
+      await handleUpdate(staffId, values); // Sử dụng giá trị values từ formik thay vì singleStaff
+      handleClose(); // Đóng modal sau khi hoàn thành cập nhật
+    },
+    validationSchema: Yup.object({
+      name: Yup.string()
+        .required("Name is required!")
+        .min(2, "Name must be 2 characters or more"),
+      age: Yup.number()
+        .typeError("Must be a number")
+        .required("Age is required!")
+        .positive("Age must be a positive number")
+        .integer("Age must be an integer"),
+      address: Yup.string().required("Address is required!"),
+      avatar: Yup.string().required("Required!"),
+    }),
+  });
+
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+
+    // Update formik's values
+    formik.handleChange(event);
   };
 
   return (
@@ -59,71 +91,100 @@ export default function TransitionsModal({ staffId, handleClose }) {
         open={open}
         onClose={handleClose}
         closeAfterTransition
-        slots={{ backdrop: Backdrop }}
-        slotProps={{
-          backdrop: {
-            timeout: 500,
-          },
+        BackdropComponent={Backdrop}
+        BackdropProps={{
+          timeout: 500,
         }}
       >
         <Fade in={open}>
-          <Box component="form" sx={style}>
+          <Box sx={style}>
             <Typography variant="h3" id="modal-title">
               Staff Details
             </Typography>
-            <div>
-              <img
-                src={singleStaff.avatar}
-                alt="Avatar"
-                style={{ width: "100px", height: "100px", borderRadius: "30px" }}
-              />
-            </div>
-            <TextField
-              style={{ width: "500px", marginTop: "20px" }}
-              id="outlined-basic"
-              label="Name"
-              variant="outlined"
-              value={singleStaff.name || ""}
-              onChange={(e) => handleFieldChange("name", e.target.value)}
-            />
-            <TextField
-              style={{ width: "500px", marginTop: "20px" }}
-              id="outlined-basic"
-              label="Age"
-              variant="outlined"
-              value={singleStaff.age || ""}
-              onChange={(e) => handleFieldChange("age", e.target.value)}
-            />
-            <TextField
-              style={{ width: "500px", marginTop: "20px" }}
-              id="outlined-basic"
-              label="Address"
-              variant="outlined"
-              value={singleStaff.address || ""}
-              onChange={(e) => handleFieldChange("address", e.target.value)}
-            />
-
-            <TextField
-              style={{ width: "500px", marginTop: "20px" }}
-              id="outlined-read-only-input"
-              label="Created At"
-              variant="outlined"
-              value={staffCreatedDate || ""}
-              InputProps={{
-                readOnly: true,
-              }}
-            />
-            <Container
-              maxWidth="lg"
-              style={{
-                margin: "10px",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
+            <form
+              style={{ textAlign: "center" }}
+              onSubmit={formik.handleSubmit}
             >
-              <Button variant="contained">Update</Button>
-            </Container>
+              <div>
+                <img
+                  src={formik.values.avatar}
+                  alt="Avatar"
+                  style={{
+                    width: "100px",
+                    height: "100px",
+                    borderRadius: "30px",
+                  }}
+                />
+              </div>
+              <TextField
+                style={{ width: "500px", marginTop: "20px" }}
+                id="outlined-basic"
+                label="Name"
+                variant="outlined"
+                name="name"
+                value={formik.values.name || ""}
+                onChange={handleInputChange}
+                error={formik.touched.name && formik.errors.name}
+                helperText={formik.touched.name && formik.errors.name}
+              />
+              <TextField
+                style={{ width: "500px", marginTop: "20px" }}
+                id="outlined-basic"
+                label="Age"
+                variant="outlined"
+                name="age"
+                value={formik.values.age || ""}
+                onChange={handleInputChange}
+                error={formik.touched.age && formik.errors.age}
+                helperText={formik.touched.age && formik.errors.age}
+              />
+              <TextField
+                style={{ width: "500px", marginTop: "20px" }}
+                id="outlined-basic"
+                label="Address"
+                variant="outlined"
+                name="address"
+                value={formik.values.address || ""}
+                onChange={handleInputChange}
+                error={formik.touched.address && formik.errors.address}
+                helperText={formik.touched.address && formik.errors.address}
+              />
+              <TextField
+                style={{ width: "500px", marginTop: "20px" }}
+                id="outlined-basic"
+                label="Avatar"
+                variant="outlined"
+                name="avatar"
+                value={formik.values.avatar || ""}
+                onChange={handleInputChange}
+                error={formik.touched.avatar && formik.errors.avatar}
+                helperText={formik.touched.avatar && formik.errors.avatar}
+              />
+              <TextField
+                style={{ width: "500px", marginTop: "20px" }}
+                id="outlined-basic"
+                label="Created At"
+                variant="outlined"
+                name="createdAt"
+                value={FormatDate(formik.values.createdAt) || ""}
+                onChange={handleInputChange}
+                error={formik.touched.createdAt && formik.errors.createdAt}
+                helperText={formik.touched.createdAt && formik.errors.createdAt}
+              />
+              <Container
+                maxWidth="lg"
+                style={{
+                  margin: "10px",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Button type="submit" variant="contained">
+                  Update
+                </Button>
+              </Container>
+            </form>
           </Box>
         </Fade>
       </Modal>

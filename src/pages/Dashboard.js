@@ -16,11 +16,11 @@ import Button from "@mui/material/Button";
 import { StaffContext } from "../staffs/StaffContext";
 
 // toastify
-import { ToastContainer } from "react-toastify";
 import { Delete } from "@mui/icons-material";
 import "react-toastify/dist/ReactToastify.css";
 import TransitionsModal from "../components/TransitionsModal";
-
+import { Link } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
 // columns for properties of staff
 const columns = [
   { id: "id", label: "ID", minWidth: 170 },
@@ -56,7 +56,7 @@ export const Dashboard = () => {
   const [selectedStaffId, setSelectedStaffId] = useState(null);
 
   // get function from staffContext
-  const { staffs, handleDelete } = useContext(StaffContext);
+  const { staffs, handleDelete} = useContext(StaffContext);
   // pagination
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -72,11 +72,11 @@ export const Dashboard = () => {
 
   return (
     <div>
+      <ToastContainer />
       <TransitionsModal
         staffId={selectedStaffId}
         handleClose={() => setSelectedStaffId(null)}
       />
-      <ToastContainer />
       <Container maxWidth="lg">
         <Typography
           component="h1"
@@ -94,7 +94,7 @@ export const Dashboard = () => {
         maxWidth="lg"
         style={{ display: "flex", justifyContent: "center", alignItems: "center" }}
       >
-        <Button variant="contained">Add new staff</Button>
+        <Button component={Link} to="/add" variant="contained">Add new staff</Button>
       </Container>
       <Paper sx={{ width: "100%", overflow: "hidden" }}>
         <TableContainer sx={{ maxHeight: 440 }}>
